@@ -6,6 +6,9 @@
 
     <link rel="stylesheet" href="./global.css" />
     <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <!-- Optional: include slick-theme.css if you want the default styling -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap"
@@ -26,12 +29,18 @@
       </section>
       <section class="jishan-content-wrapper">
         <div class="jishan-content1">
-          <img
+          <!-- <img
             class="clip-path-group6"
             alt=""
             src="./public/1clip-path-group@2x.png"
-          />
-
+          /> -->
+          <div class="clip-path-group6">
+            <div class="slider">
+            <div><img src="./public/1clip-path-group@2x.png"/></div>
+            <div><img src="./public/2clip-path-group@2x.png"/></div>
+            <div><img src="./public/3clip-path-group@2x.png"/></div>
+            </div>
+          </div>
           <div class="jishan-details">
             <div class="div37">吉山</div>
             <div class="jishan-icons">
@@ -230,7 +239,8 @@
         <div class="div55">吉乡吉水吉山情!吉山,欢迎您</div>
       </footer>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
     <script>
       var groupContainer1 = document.getElementById("groupContainer1");
       if (groupContainer1) {
@@ -238,6 +248,15 @@
           window.location.href = "./frame1.html";
         });
       }
+      $(document).ready(function(){
+      $('.slider').slick({
+      autoplay: true, // Enable autoplay
+      autoplaySpeed: 2000, // Set the autoplay speed in milliseconds
+      pauseOnHover: false, // Optionally pause autoplay on hover
+      dots: true // Enable navigation dots
+      // Add other options as needed
+    });
+  });
       </script>
   </body>
 </html>
