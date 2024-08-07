@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>地面图片叠加层</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <style>
+    body,
+    html,
+    #container {        
+        width: 100%;
+        height: 90%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+    #result {margin-top: 10px; height: 100px; overflow: auto;}
+    #map_container {
+        width: 100%;
+        height: 100%;
+    }
+    #addWalkBtn {margin-bottom: 5px;}
+    #mydiv {
+            position: absolute; /* 绝对定位 */
+            top: 300px; /* 距离顶部10像素 */
+            right: 10px; /* 距离右侧10像素 */
+            z-index: 1000; /* 确保按钮在地图上方 */
+        }
+    #daohang,#gonggao{
+        cursor: pointer;
+    }
+    </style>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=Q1TfFxLvBh4qnCwFgI4QoKFnRPHRJGd0"></script>
+    <link href="//mapopen.cdn.bcebos.com/github/BMapGLLib/DrawingManager/src/DrawingManager.min.css" rel="stylesheet">
+    <script type="text/javascript" src="//mapopen.cdn.bcebos.com/github/BMapGLLib/DrawingManager/src/DrawingManager.min.js"></script>
+    <link rel="stylesheet" href="./global.css" />
+    <link rel="stylesheet" href="./tangchuan.css" />
+</head>
+<body>
+<object type="text/x-scriptlet" data="./header.html" width=100% height=40%></object>
+    <div id="container"></div>
+    <div id="result" style="width:100%;height:20%;"></div>
+    <!-- <div id="r-result">请输入:<input type="text" id="suggestId" size="20" value="查询地点" style="width:150px;" /></div> -->
+	<!-- <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div> -->
+    <div class="services-title-wrapper" id="mydiv">
+        <div class="services-title">
+          <div class="info-link-background-parent" id="groupContainer">
+            <div class="info-link-background">
+              <div class="frame-parent3" id="daohang">
+                <div class="map-icon-wrapper" >
+                  <img
+                    class="map-icon"
+                    alt=""
+                    src="./public/3vector-7.svg"
+                  />
+                </div>
+                <img
+                  class="map-pin-icon"
+                  alt=""
+                  src="./public/3vector-8.svg"
+                />
+
+                <img
+                  class="component-3-icon"
+                  alt=""
+                  src="./public/3component-3.svg"
+                />
+              </div>
+            </div>
+            <div class="div26">步行导航</div>
+          </div>
+          <div class="facility-link-parent" id="groupContainer1">
+            <div class="info-link-background">
+              <img
+                class="service-labels-icon"
+                alt=""
+                src="./public/3vector-9.svg"
+              />
+            </div>
+            <div class="div27">服务设施</div>
+          </div>
+          <div class="facility-link-parent" id="gonggao">
+            <div class="info-link-background">
+              <img
+                class="service-labels-icon"
+                loading="lazy"
+                alt=""
+                src="./public/3vector-91.svg"
+              />
+            </div>
+            <div class="div27">景区公告</div>
+          </div>
+        </div>
+      </div>
+      <!-- 弹窗背景 -->
+    <div id="modal">
+        <div class="div4">
+          <main class="rectangle-parent">
+            <img
+              class="domain-agnostic-icon"
+              alt=""
+              src="./public/domain-agnostic.svg"
+            />
+          </main>
+          <div class="content">
+            <img class="vector-icon3" alt="" src="./public/7vector.svg" />
+    
+            <div class="vector-wrapper">
+              <img
+                class="vector-icon4"
+                loading="lazy"
+                alt=""
+                src="./public/8vector.svg"
+                id="close"
+              />
+            </div>
+            <div class="announcement-container">
+              <div class="mentorsinvestorsx-wrapper">
+                <img
+                  class="mentorsinvestorsx-icon"
+                  loading="lazy"
+                  alt=""
+                  src="./public/7rectangle-1@2x.png"
+                />
+              </div>
+              <div class="welcome-message-container">
+                <div class="welcome-message">
+                  <div class="div8">尊敬的各位游客</div>
+                  <div class="div8">吉山热忱欢迎广大游客朋友们前来观</div>
+                  <div class="div10">光游览！</div>
+                </div>
+                <div class="tips-message">
+                  <div class="wrapper">
+                    <div class="div11">温馨提示：</div>
+                  </div>
+                  <div class="container">
+                    <div class="div8">请广大游客注意交通安全，提前规划路</div>
+                  </div>
+                  <div class="frame">
+                    <div class="div13">线，游览期间小心慢行。遵守公共秩序，</div>
+                  </div>
+                  <div class="div14">不随地乱丢垃圾，文明出行。游览期间</div>
+                  <div class="frame-div">
+                    <div class="div13">注意安全，照看好老人小孩。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="notification">
+            <img
+              class="component-7-icon"
+              loading="lazy"
+              alt=""
+              src="./public/7component-7.svg"
+            />
+    
+            <div class="div16">通知公告</div>
+          </div>
+        </div>
+      </div>
+</body>
+</html>
+<script>
+var modal = document.getElementById("modal")
+var gonggao = document.getElementById("gonggao");
+      if (gonggao) {
+        gonggao.addEventListener("click", function (e) {
+            modal.style.display = "block";
+        });
+      }
+      //   关闭按钮
+      document.getElementById("close").onclick = function () {
+            modal.style.display = "none";
+      };
+//监听导航按钮
+var groupdaohang = document.getElementById("daohang");
+    if (groupdaohang) {
+    groupdaohang.addEventListener("click", function (e) {
+        marker1.addEventListener('click', function () {
+        var polyline = displayRouteOnPanel(0);
+        // 将折线添加到地图上
+        map.addOverlay(polyline);
+        // 调整地图视野以适应折线
+        map.setViewport(allRoutes[0]);
+    });
+    marker2.addEventListener('click', function () {
+        var polyline = displayRouteOnPanel(1);
+        // 将折线添加到地图上
+        map.addOverlay(polyline);
+        // 调整地图视野以适应折线
+        map.setViewport(allRoutes[1]);
+    });
+    marker3.addEventListener('click', function () {
+        var polyline = displayRouteOnPanel(2);
+        // 将折线添加到地图上
+        map.addOverlay(polyline);
+        // 调整地图视野以适应折线
+        map.setViewport(allRoutes[2]);
+    });
+    marker4.addEventListener('click', function () {
+        var polyline = displayRouteOnPanel(3);
+        // 将折线添加到地图上
+        map.addOverlay(polyline);
+        // 调整地图视野以适应折线
+        map.setViewport(allRoutes[3]);
+    });
+    marker5.addEventListener('click', function () {
+        var polyline = displayRouteOnPanel(4);
+        // 将折线添加到地图上
+        map.addOverlay(polyline);
+        // 调整地图视野以适应折线
+        map.setViewport(allRoutes[4]);
+    });
+    });
+    }
+var map = new BMapGL.Map('container', {minZoom: 5, maxZoom: 22});
+var startMarker, endMarker; // 定义起始点和终点的标记
+var isWalkMarker = false;//初始化导航状态
+map.centerAndZoom(new BMapGL.Point(117.32286836397563,25.96493848324678), 18);
+map.enableScrollWheelZoom(true);
+map.setTilt(45);
+map.setDisplayOptions({
+    poiText: false,  // 隐藏poi标注
+    poiIcon: false,  // 隐藏poi图标
+    building: false  // 隐藏楼块
+});
+// 替换底图
+var pStart = new BMapGL.Point(117.31578955681104,25.969271517040863);
+var pEnd = new BMapGL.Point(117.32940993121808,25.96175085819854);
+var bounds = new BMapGL.Bounds(new BMapGL.Point(pStart.lng, pEnd.lat), new BMapGL.Point(pEnd.lng, pStart.lat));
+var imgOverlay = new BMapGL.GroundOverlay(bounds, {
+    type: 'image',
+    url: 'img/ditu.jpg',
+    opacity: 1
+});
+map.addOverlay(imgOverlay);
+
+
+// 创建建筑图标
+var currentZoom = map.getZoom();
+
+// 创建图标对象
+var icon1 = new BMapGL.Icon("img/caipai.png", new BMapGL.Size(0.0005, 0.0005));
+var icon2 = new BMapGL.Icon("img/liushi.png", new BMapGL.Size(0.0005, 0.0005));
+var icon3 = new BMapGL.Icon("img/dongfang.png", new BMapGL.Size(0.0005, 0.0005));
+var icon4 = new BMapGL.Icon("img/cyuyuan.png", new BMapGL.Size(0.0005, 0.0005));
+var icon5 = new BMapGL.Icon("img/kangzhan.png", new BMapGL.Size(0.0005, 0.0005));
+var icona = new BMapGL.Icon("img/fuqiao.png", new BMapGL.Size(0.0005, 0.0005));
+// 创建标记对象
+
+var marker1 = new BMapGL.Marker(new BMapGL.Point(117.32382000525202, 25.96414173153563), {icon: icon1});
+var marker2 = new BMapGL.Marker(new BMapGL.Point(117.32455724979398,25.965439501211527), {icon: icon2});
+var marker3 = new BMapGL.Marker(new BMapGL.Point(117.32119955564464,25.96729757478217), {icon: icon3});
+var marker4 = new BMapGL.Marker(new BMapGL.Point(117.318224026171,25.967051401535223), {icon: icon4});
+var marker5 = new BMapGL.Marker(new BMapGL.Point(117.32438887320588,25.964696188359017), {icon: icon5});
+var markera = new BMapGL.Marker(new BMapGL.Point(117.32062460553368,25.96477973932417), {icon: icona});
+map.addOverlay(marker1)
+map.addOverlay(marker2)
+map.addOverlay(marker3)
+map.addOverlay(marker4)
+map.addOverlay(marker5)
+map.addOverlay(markera)
+// 初始时调用一次调整大小函数，以确保图标大小正确
+smoothAdjustIconSize(map.getZoom());
+
+// 定义一个函数来平滑调整图标大小
+function smoothAdjustIconSize(targetZoom) {
+    var zoomDiff = targetZoom - currentZoom;
+    currentZoom += zoomDiff * 0.3; // 这里使用了0.1作为平滑因子，可以根据需要调整
+    var baseSize = new BMapGL.Size(0.0005, 0.0005); // 基础大小
+    var scaleFactor = Math.pow(2, currentZoom / 1);
+    var newSize = new BMapGL.Size(baseSize.width * scaleFactor, baseSize.height * scaleFactor);
+    marker1.setIcon(new BMapGL.Icon("img/caipai.png", newSize));
+    marker2.setIcon(new BMapGL.Icon("img/liushi.png", newSize));
+    marker3.setIcon(new BMapGL.Icon("img/dongfang.png", newSize));
+    marker4.setIcon(new BMapGL.Icon("img/cuiyuan.png", newSize));
+    marker5.setIcon(new BMapGL.Icon("img/kangzhan.png", newSize));
+    markera.setIcon(new BMapGL.Icon("img/fuqiao.png", newSize));
+    if (Math.abs(zoomDiff) > 0.01) {
+        requestAnimationFrame(function() {
+            smoothAdjustIconSize(targetZoom);
+        });
+    }
+}
+
+// 监听地图的缩放结束事件
+map.addEventListener("zoomend", function() {
+    var zoom = map.getZoom();
+    smoothAdjustIconSize(zoom);
+});
+
+// 创建信息窗口
+var opts = {
+    width: 200,
+    height: 100,
+    title: '故宫博物院'
+};
+var infoWindow = new BMapGL.InfoWindow('地址：北京市东城区王府井大街88号乐天银泰百货八层', opts);
+// 点标记添加点击事件
+// marker1.addEventListener('click', function () {
+//     var point = new BMapGL.Point(117.32335357080596,25.963718851807283);
+//     map.openInfoWindow(infoWindow, point); // 开启信息窗口
+// });
+
+// 地球半径，单位为米
+const EARTH_RADIUS = 6378137;
+// 将经纬度转换为弧度
+function radians(degrees) {
+    return degrees * Math.PI / 180.0;
+}
+// 使用Haversine公式计算两点之间的距离
+function getDistance(lat1, lng1, lat2, lng2) {
+    var radLat1 = radians(lat1);
+    var radLat2 = radians(lat2);
+    var deltaLat = radians(lat2 - lat1);
+    var deltaLng = radians(lng2 - lng1);
+
+    var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+            Math.cos(radLat1) * Math.cos(radLat2) *
+            Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    var distance = EARTH_RADIUS * c;
+    return distance;
+}
+// 将方向转换为中文描述
+function convertDirection(angle) {
+    var angle = angle%360;
+    var direction;
+    //定义方向区间
+        if(angle == 0){direction = "东";}
+        else if(angle > 0 && angle < 45){direction = "东偏南";}
+        else if(angle > 45 && angle < 90){direction = "南偏东";}
+        else if(angle == 90){direction = "南";}
+        else if(angle > 90 && angle < 135){direction = "南偏西";}
+        else if(angle > 135 && angle < 180){direction = "西偏南";}
+        else if(angle == 180){direction = "西";}
+        else if(angle > 180 && angle < 225){direction = "西偏北";}
+        else if(angle > 225 && angle < 270){direction = "北偏西";}
+        else if(angle == 270){direction = "北";}
+        else if(angle > 270 && angle < 315){direction = "北偏东";}
+        else{direction = "东偏北";}
+    return direction;
+}
+
+function disanddir(startPoint,endPoint){
+// 将经纬度转换为百度地图GL的坐标系
+var startP = map.pointToPixel(startPoint);
+var endP = map.pointToPixel(endPoint);
+var distance = getDistance(startPoint.lat,startPoint.lng, endPoint.lat,endPoint.lng).toFixed(0);
+// 计算两点之间的方向（角度，以x轴正方向为0度，逆时针）
+var direction = Math.atan2(endP.y - startP.y, endP.x - startP.x) * (180 / Math.PI);
+// 转换方向为中文
+var directionText = convertDirection(direction.toFixed(2));
+// 输出距离
+return {
+    distance: distance,
+    directionText: directionText
+  };
+}
+
+
+
+
+
+// 定义路线的坐标点数组
+//材排厝
+var points1 = [
+    new BMapGL.Point(117.32499253536872,25.96565648360163), // 起点坐标
+    new BMapGL.Point(117.32469867370529,25.965013771520045), // 中间点坐标
+    new BMapGL.Point(117.3241962650549,25.965022341037805), // 中间点坐标
+    new BMapGL.Point(117.32434942196346,25.96477973932417), // 中间点坐标
+    new BMapGL.Point(117.32437373253597,25.96419243213687), // 中间点坐标
+    new BMapGL.Point(117.32420571814464,25.96420262357833)  // 终点坐标
+];
+//刘氏祖屋
+var points2 = [
+    new BMapGL.Point(117.32499253536872,25.96565648360163), // 起点坐标
+    new BMapGL.Point(117.32469867370529,25.965013771520045), // 中间点坐标
+    new BMapGL.Point(117.3241962650549,25.965022341037805), // 中间点坐标
+    new BMapGL.Point(117.324446776222,25.965339342983285)  // 终点坐标
+];
+//东方月
+var points3 = [
+    new BMapGL.Point(117.32214427471357,25.96555239142055), // 起点坐标
+    new BMapGL.Point(117.32208255474707,25.965316689160062), // 中间点坐标
+    new BMapGL.Point(117.32145704836137,25.965640827222696), // 中间点坐标
+    new BMapGL.Point(117.32121468194163,25.9662550839998), // 中间点坐标
+    new BMapGL.Point(117.32087042494997,25.96697391850469)  // 终点坐标
+];
+//翠园
+var points4 = [
+    new BMapGL.Point(117.32214427471357,25.96555239142055), // 起点坐标
+    new BMapGL.Point(117.32208255474707,25.965316689160062), // 中间点坐标
+    new BMapGL.Point(117.32253979261083,25.965148509011485), // 中间点坐标
+    new BMapGL.Point(117.32277089544728,25.964768551345635), // 中间点坐标
+    new BMapGL.Point(117.32219735307088,25.964559675830422), // 中间点坐标
+    new BMapGL.Point(117.32212105773817,25.964761467143937), // 中间点坐标
+    new BMapGL.Point(117.32170402183074,25.96502679515449), // 中间点坐标
+    new BMapGL.Point(117.32133893529023,25.965124935387475), // 中间点坐标
+    new BMapGL.Point(117.3202507444348,25.96453567606782), // 中间点坐标
+    new BMapGL.Point(117.31996319594285,25.965225699203486), // 中间点坐标
+    new BMapGL.Point(117.31899909269865,25.96578105527113), // 中间点坐标
+    new BMapGL.Point(117.31862691456445,25.96623536293429), // 中间点坐标
+    new BMapGL.Point(117.31840015458135,25.96680089446419)  // 终点坐标
+];
+//抗战
+var points5 = [
+    new BMapGL.Point(117.32499253536872,25.96565648360163), // 起点坐标
+    new BMapGL.Point(117.32469867370529,25.965013771520045), // 中间点坐标
+    new BMapGL.Point(117.3241962650549,25.965022341037805), // 中间点坐标
+    new BMapGL.Point(117.32438887320588,25.964696188359017)  // 终点坐标
+];
+// 创建一个多维数组来存储所有线路
+var allRoutes = [points1, points2, points3, points4 ,points5];
+
+// 创建导航对象
+// var route = new BMapGL.WalkingRoute(map, {
+//          renderOptions: {panel: "result", autoViewport: true}
+//         //  renderOptions: {map: map, panel: "result", autoViewport: true}
+//      }); // 也可以使用BMapGL.DrivingRoute
+// 设置起点和终点
+// var startPoint = new BMapGL.Point(117.3210972236454,25.96494996904898); // 起点坐标
+// var endPoint = new BMapGL.Point(117.32237032610864,25.964301746886427);   // 终点坐标
+
+
+// 地图点击事件，设置起始点或终点
+// map.addEventListener("click", function(e) {   
+//     if(true){        
+//     var pt = e.latlng; // 获取点击的经纬度坐标
+//     var marker = new BMapGL.Marker(new BMapGL.Point(pt.lng,pt.lat));
+//     map.addOverlay(marker);
+//     // if (!startMarker) {
+//     //     // 如果还没有设置起始点，则设置起始点
+//     //     startMarker = new BMapGL.Marker(pt);
+//     //     map.addOverlay(startMarker);
+//         alert('起始点已设置在：' + pt.lng + ',' + pt.lat);
+//     // } else if (!endMarker) {
+//     //     // 如果已经设置了起始点但还没有设置终点，则设置终点
+//     //     endMarker = new BMapGL.Marker(pt);
+//     //     map.addOverlay(endMarker);
+//     //     alert('终点已设置在：' + pt.lng + ',' + pt.lat);
+
+//     //     // 规划步行路线
+//     //     planWalkingRoute(startMarker.getPosition(), endMarker.getPosition());
+//     // }
+//     }        
+// });
+
+// 将导航信息显示在面板上的函数
+function displayRouteOnPanel(line) {
+            var panel = document.getElementById('result');
+            var routeInstructions = ''; // 初始化导航步骤字符串
+            // 创建折线对象
+            var polyline = new BMapGL.Polyline(allRoutes[line], {
+                strokeColor: "green",    // 线颜色
+                strokeWeight: 10,        // 线宽
+                strokeOpacity: 0.5,     // 线透明度
+            });
+            // 假设导航步骤，实际应用中应根据具体逻辑生成
+            for (var i = 0; i < allRoutes[line].length - 1; i++) {
+            var result = disanddir(allRoutes[line][i], allRoutes[line][i + 1]);
+            routeInstructions += '<p>从点 ' + (i + 1) + ' 到点 ' + (i + 2) + ' 的路线：'+
+            result.directionText + '方向直行 '+ 
+            result.distance +'米'+'</p>';
+            }
+            // 设置面板内容
+            panel.innerHTML = routeInstructions;  
+            return polyline;
+}
+        
+// 规划步行路线的函数
+// function planWalkingRoute(start, end) {
+//     var walking = new BMapGL.WalkingRoute(map, {
+//         renderOptions: {map: map, panel: "result", autoViewport: true}
+//     });
+//     walking.search(start, end);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//自动查询
+function G(id) {
+		return document.getElementById(id);
+}
+var ac = new BMapGL.Autocomplete(    //建立一个自动完成的对象
+		{"input" : "suggestId"
+		,"location" : map
+});
+ac.addEventListener("onhighlight", function(e) {  //鼠标放在下拉列表上的事件
+    var str = "";
+    var _value = e.fromitem.value;
+    var value = "";
+    if (e.fromitem.index > -1) {
+        value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+    }    
+    str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+    
+    value = "";
+    if (e.toitem.index > -1) {
+        _value = e.toitem.value;
+        value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+    }    
+    str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+    G("searchResultPanel").innerHTML = str;
+});
+var myValue;
+ac.addEventListener("onconfirm", function(e) {    //鼠标点击下拉列表后的事件
+var _value = e.item.value;
+    myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+    G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+    
+    setPlace();
+});
+function setPlace(){
+    map.clearOverlays();    //清除地图上所有覆盖物
+    function myFun(){
+        var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+        map.centerAndZoom(pp, 18);
+        map.addOverlay(new BMapGL.Marker(pp));    //添加标注
+    }
+    var local = new BMapGL.LocalSearch(map, { //智能搜索
+        onSearchComplete: myFun
+    });
+    local.search(myValue);
+}
+</script>
