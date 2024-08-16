@@ -59,6 +59,7 @@
   max-width: 100%;
 }
 .search-icon1 {
+  padding-top: 1px;
   height: 100%;
   width: 111px;
   position: absolute;
@@ -86,7 +87,13 @@
   display: none;
   max-width: 100%;
 }
+.vector-icon22:hover {
+  fill: #c25e32; /* 改变填充色 */
+  stroke: #57b873; /* 如果有描边，改变描边色 */
+  box-shadow: -8px 8px 0 0 #000;
+}
 .a5 {
+  padding-top: 8px;
   text-decoration: none;
   color: var(--color-white);
   display: inline-block;
@@ -185,7 +192,7 @@
     var(--padding-35xl);
   box-sizing: border-box;
   gap: var(--gap-2xs-1);
-  min-width: 161px;
+  min-width: 246.9px;
   z-index: 3;
   margin-left: -1px;
   cursor: pointer;
@@ -338,6 +345,7 @@
   z-index: 1;
 }
 .vector-parent13,
+.vector-parent14,
 .vector-wrapper2 {
   display: flex;
   flex-direction: column;
@@ -354,6 +362,7 @@
   gap: var(--gap-2xs-1);
   min-width: 246.8px;
   z-index: 3;
+  cursor: pointer;
 }
 .vector-parent13:hover {
   background-color: #e1e1e0; /* 鼠标悬停时的背景色 */
@@ -377,36 +386,25 @@
   display: none;
 }
 .vector-parent14 {
-  position: absolute;
-  top: 0;
-  left: 0;
   background-color: var(--color-white);
-  width: 100%;
-  display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  padding: var(--padding-19xl-8) var(--padding-xl) var(--padding-20xl-2)
-    var(--padding-33xl);
+  padding: var(--padding-20xl-2) var(--padding-23xl) var(--padding-19xl-8)
+    var(--padding-35xl);
   box-sizing: border-box;
-  height: 100%;
+  gap: var(--gap-2xs-1);
+  min-width: 246.8px;
+  z-index: 3;
+  cursor: pointer;
 }
 .vector-parent14:hover {
   background-color: #e1e1e0; /* 鼠标悬停时的背景色 */
   color: #f4a023; /* 鼠标悬停时的字体颜色 */
 }
 .link-icon {
-  position: absolute;
-  height: 25.66%;
-  width: 11.7%;
-  top: 36.28%;
-  right: 59.24%;
-  bottom: 38.05%;
-  left: 29.06%;
-  max-width: 100%;
-  overflow: hidden;
-  max-height: 100%;
-  z-index: 2;
+  width: 30.5px;
+  height: 32.9px;
+  position: relative;
+  z-index: 1;
 }
 .frame-parent5 {
   height: 113px;
@@ -432,7 +430,8 @@
   cursor: pointer;
 }
 .top-menu-parent {
-  width: 1720.8px;
+  width: auto;
+  height: auto;
   justify-content: center;
   padding: 0 var(--padding-xl) 0 0;
   box-sizing: border-box;
@@ -1356,4 +1355,26 @@
   .div55 {
     font-size: var(--font-size-3xl);
   }
+}
+.frame-input{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.frame-input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background-color: var(--color-white);
+  height: 56px;
+  flex: 1;
+  justify-content: flex-start;
+  padding: var(--padding-smi-1) 15px var(--padding-smi-2);
+  box-sizing: border-box;
+  font-family: var(--font-inter);
+  font-size: var(--font-size-11xl-2);
+  color: var(--color-darkgray-200);
+  min-width: 262px;
+  z-index: 2;
 }
